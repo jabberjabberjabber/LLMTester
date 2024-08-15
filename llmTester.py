@@ -84,9 +84,11 @@ class LLMProcessor:
             "max_length": 1000,
             **sampler_settings
         }
-        
         response = requests.post(f"{self.api_url}/api/v1/generate", json=payload, headers=self.headers)
-        return {payload, response.json()["results"][0].get("text", "")} 
+        return {
+            "payload": payload,
+            "response": response.json()["results"][0].get("text", "")
+        }
         
         
 class BenchmarkThread(QThread):
@@ -105,21 +107,21 @@ class BenchmarkThread(QThread):
 
     def run(self):
         try:
-            response = self.llm_processor.query_llm(
+            result = self.llm_processor.query_llm(
                 self.template_name, self.system_instruction, self.instruction, 
                 self.content, self.attached_files, self.sampler_settings
             )
             
             with open(f"{self.output_file}_structured.json", "w") as f:
-                json.dump(response, f, indent=2)
+                json.dump(result, f, indent=2)
             
             with open(f"{self.output_file}_plain.txt", "w") as f:
-                f.write(str(response))
+                f.write(f"Payload:\n{json.dumps(result['payload'], indent=2)}\n\nResponse:\n{result['response']}")
             
             self.output_received.emit(f"Response saved to {self.output_file}_structured.json and {self.output_file}_plain.txt")
         except Exception as e:
             self.output_received.emit(f"Error: {str(e)}")
-
+            
 class SamplerSlider(QWidget):
     def __init__(self, name, min_value, max_value, step):
         super().__init__()
@@ -174,10 +176,12 @@ class LLMBenchmarkGUI(QMainWindow):
         # Prompt template selection
         template_layout = QHBoxLayout()
         self.template_group = QButtonGroup(self)
-        for template_name in ["Mistral", "Vicuna", "Llama 3", "ChatML", "Phi-3", "Yi", "WizardLM", "Alpaca"]:
+        for i, template_name in enumerate(["Mistral", "Vicuna", "Llama 3", "ChatML", "Phi-3", "Yi", "WizardLM", "Alpaca"]):
             radio = QRadioButton(template_name)
             self.template_group.addButton(radio)
             template_layout.addWidget(radio)
+            if i == 0:  # Set the first radio button (Alpaca) as default
+                radio.setChecked(True)
         layout.addLayout(template_layout)
 
         # System instruction

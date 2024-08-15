@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-LLMTester lets you test new models for figure out prompting styles and sampler settings.
+LLMTester lets you test new models and figure out prompting styles and sampler settings.
 ![LLMTester Screenshot](screenshot.PNG)
 
 ## Features

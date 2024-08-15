@@ -25,7 +25,7 @@ LLMTester lets you test new models and figure out prompting styles and sampler s
 
 2. Install [Python for Windows](https://www.python.org/downloads/windows/).
 
-4. Download [KoboldCPP.exe](https://github.com/LostRuins/koboldcpp/releases) and place it in the LLMTester folder. Make sure it is named 'koboldcpp.exe'
+4. Download the appropriate [KoboldCPP](https://github.com/LostRuins/koboldcpp/releases) and place it in the LLMTester folder. Make sure that you name it 'koboldcpp.exe'
 
 5. Run `llmTester-run.bat` and wait for the model weights to download and Koboldcpp to start. 
 
